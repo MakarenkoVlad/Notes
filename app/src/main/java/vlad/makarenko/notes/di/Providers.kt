@@ -24,7 +24,6 @@ abstract class Providers {
             context, MainDatabase::class.java, "MainDatabase.db"
         ).build()
 
-        @Singleton
         @Provides
         fun provideNotesDao(database: MainDatabase) = database.notesDao()
     }

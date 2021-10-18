@@ -16,10 +16,18 @@ import javax.inject.Inject
 @HiltViewModel
 class EditNoteViewModel @Inject constructor(private val repository: NotesRepository): BaseViewModel<EditNoteScreenState, EditNoteScreenEvent>() {
 
-    private val reducer = EditNoteReducer(EditNoteScreenState.initial())
-
-    override val state: StateFlow<EditNoteScreenState>
-        get() = reducer.state
+    override val reducer = object : Reducer<EditNoteScreenState, EditNoteScreenEvent>(EditNoteScreenState.initial()) {
+        override fun reduce(oldState: EditNoteScreenState, event: EditNoteScreenEvent) {
+            when(event) {
+                is EditNoteScreenEvent.ChangeNote -> {
+                    setState(oldState.run { copy(note = event.note) })
+                }
+                EditNoteScreenEvent.NoteSaved -> {
+                    setState(oldState.copy(isSaved = true))
+                }
+            }
+        }
+    }
 
     fun getNote(id: Int) = viewModelScope.launch(Dispatchers.IO) {
         val note = repository.getNoteById(id)
@@ -31,20 +39,10 @@ class EditNoteViewModel @Inject constructor(private val repository: NotesReposit
     }
 
     fun saveNote() = viewModelScope.launch {
-        repository.saveNote(state.value.note)
-        reducer.sendEvent(EditNoteScreenEvent.NoteSaved)
-    }
-
-    private class EditNoteReducer(initialState: EditNoteScreenState) : Reducer<EditNoteScreenState, EditNoteScreenEvent>(initialState) {
-        override fun reduce(oldState: EditNoteScreenState, event: EditNoteScreenEvent) {
-            when(event) {
-                is EditNoteScreenEvent.ChangeNote -> {
-                    setState(oldState.run { copy(note = event.note) })
-                }
-                EditNoteScreenEvent.NoteSaved -> {
-                    setState(oldState.copy(isSaved = true))
-                }
-            }
+        val note = state.value.note
+        if (note.title.isNotBlank()) {
+            repository.saveNote(note)
+            reducer.sendEvent(EditNoteScreenEvent.NoteSaved)
         }
     }
 }

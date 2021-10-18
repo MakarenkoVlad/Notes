@@ -18,10 +18,24 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val repository: NotesRepository) :
     BaseViewModel<HomeScreenUiState, HomeScreenUiEvent>() {
 
-    private val reducer = HomeReducer(HomeScreenUiState.initial())
-
-    override val state: StateFlow<HomeScreenUiState>
-        get() = reducer.state
+    override val reducer = object : Reducer<HomeScreenUiState, HomeScreenUiEvent>(HomeScreenUiState.initial()) {
+        override fun reduce(oldState: HomeScreenUiState, event: HomeScreenUiEvent) {
+            when (event) {
+                is HomeScreenUiEvent.DeleteNote -> {
+                    setState(oldState.run { copy(data = data - event.note) })
+                }
+                is HomeScreenUiEvent.ShowNotes -> {
+                    setState(oldState.copy(data = event.data, isLoading = false))
+                }
+                is HomeScreenUiEvent.Error -> {
+                    setState(oldState.copy(isShowErrorDialog = true))
+                }
+                HomeScreenUiEvent.DismissErrorDialog -> {
+                    setState(oldState.copy(isShowErrorDialog = false))
+                }
+            }
+        }
+    }
 
     init {
         viewModelScope.launch {
@@ -43,25 +57,5 @@ class HomeViewModel @Inject constructor(private val repository: NotesRepository)
 
     fun dismissErrorDialog() {
         reducer.sendEvent(HomeScreenUiEvent.DismissErrorDialog)
-    }
-
-    private inner class HomeReducer(initialState: HomeScreenUiState) :
-        Reducer<HomeScreenUiState, HomeScreenUiEvent>(initialState) {
-        override fun reduce(oldState: HomeScreenUiState, event: HomeScreenUiEvent) {
-            when (event) {
-                is HomeScreenUiEvent.DeleteNote -> {
-                    setState(oldState.run { copy(data = data - event.note) })
-                }
-                is HomeScreenUiEvent.ShowNotes -> {
-                    setState(oldState.copy(data = event.data, isLoading = false))
-                }
-                is HomeScreenUiEvent.Error -> {
-                    setState(oldState.copy(isShowErrorDialog = true))
-                }
-                HomeScreenUiEvent.DismissErrorDialog -> {
-                    setState(oldState.copy(isShowErrorDialog = false))
-                }
-            }
-        }
     }
 }

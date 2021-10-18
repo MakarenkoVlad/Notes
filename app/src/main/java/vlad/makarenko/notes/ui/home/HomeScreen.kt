@@ -1,5 +1,6 @@
 package vlad.makarenko.notes.ui.home
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -81,12 +82,16 @@ private fun HomeBodyStateful(
                                 .background(color),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            if (dismissState.targetValue == DismissValue.DismissedToEnd)
-                                Icon(
-                                    imageVector = Icons.Filled.Delete,
-                                    contentDescription = "Trash can",
-                                    modifier = Modifier.padding(start = 16.dp)
-                                )
+                            val isShown =
+                                dismissState.targetValue == DismissValue.DismissedToEnd
+                            Crossfade(targetState = isShown) {
+                                if (it)
+                                    Icon(
+                                        imageVector = Icons.Filled.Delete,
+                                        contentDescription = "Trash can",
+                                        modifier = Modifier.padding(start = 16.dp)
+                                    )
+                            }
                         }
                     },
                     directions = setOf(DismissDirection.StartToEnd)

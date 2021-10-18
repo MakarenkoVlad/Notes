@@ -19,5 +19,3 @@ abstract class Reducer<S : UiState, in E : UiEvent>(initialState: S) {
 
     abstract fun reduce(oldState: S, event: E)
 }
-
-//TODO: Implement time capsule
