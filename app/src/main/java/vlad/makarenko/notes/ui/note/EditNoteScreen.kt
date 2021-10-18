@@ -5,14 +5,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import vlad.makarenko.notes.data.Note
@@ -58,14 +59,14 @@ fun EditNoteScreenStateful(
                 onValueChange = { onChangeNote(note.copy(title = it)) },
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             )
             TextField(
                 value = note.description,
                 onValueChange = { onChangeNote(note.copy(description = it)) },
                 modifier = Modifier
                     .weight(5f)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             )
         }
     }
