@@ -11,7 +11,6 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import vlad.makarenko.notes.ui.home.HomeBody
 import vlad.makarenko.notes.ui.note.EditNoteBody
-import vlad.makarenko.notes.ui.note.NewNoteBody
 import vlad.makarenko.notes.ui.theme.NotesTheme
 
 @AndroidEntryPoint
@@ -35,7 +34,7 @@ fun NotesApp() {
                 HomeBody(navController)
             }
             composable(Screen.NewNote.route) {
-                NewNoteBody(navController)
+                EditNoteBody(navController = navController)
             }
             composable(
                 Screen.EditNote.signature, arguments = listOf(

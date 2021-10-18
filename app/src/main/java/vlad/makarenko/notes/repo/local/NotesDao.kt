@@ -1,9 +1,6 @@
 package vlad.makarenko.notes.repo.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import vlad.makarenko.notes.data.Note
 
@@ -16,7 +13,7 @@ interface NotesDao {
     @Update
     suspend fun updateNote(note: Note)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: Note)
 
     @Query("DELETE FROM notes WHERE :id = id")
