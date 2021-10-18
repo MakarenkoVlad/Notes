@@ -7,7 +7,6 @@ interface NotesRepository {
 
     fun getNotes(): Flow<List<Note>>
 
-    //TODO: узнать как можно получать резалт из базы данных
     suspend fun getNoteById(id: Int): Note
 
     suspend fun saveNote(note: Note)
