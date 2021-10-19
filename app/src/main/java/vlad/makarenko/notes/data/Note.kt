@@ -16,4 +16,8 @@ data class Note(
             description = "",
         )
     }
+
+    override fun toString(): String {
+        return "$title\n\n$description"
+    }
 }
